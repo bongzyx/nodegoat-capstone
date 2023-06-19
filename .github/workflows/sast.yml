@@ -74,10 +74,10 @@ jobs:
     name: SAST Semgrep
     # If you are self-hosting, change the following `runs-on` value:
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+    # permissions:
+    #   actions: read
+    #   contents: read
+    #   security-events: write
     container:
       # A Docker image with Semgrep installed. Do not change this.
       image: returntocorp/semgrep
