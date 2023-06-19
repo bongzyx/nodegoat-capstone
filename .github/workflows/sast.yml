@@ -7,7 +7,7 @@ on:
 jobs:
   SAST-CodeQL:
     name: Build and SAST CodeQL
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # permissions:
     #   actions: read
     #   contents: read
@@ -44,7 +44,7 @@ jobs:
   spotbugs:
     name: SAST SpotBugs
     needs: [SAST-CodeQL]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # permissions:
     #   actions: read
     #   contents: read
@@ -73,7 +73,7 @@ jobs:
   semgrep:
     name: SAST Semgrep
     # If you are self-hosting, change the following `runs-on` value:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # permissions:
     #   actions: read
     #   contents: read
