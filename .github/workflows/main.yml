@@ -1,0 +1,15 @@
+name: 00 - Main CI / CD Pipeline
+
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  workflow_dispatch:
+  
+jobs:
+  sast:
+    needs: build
+    name: SAST
+    uses: ./.github/workflows/sast.yml
+    secrets: inherit
