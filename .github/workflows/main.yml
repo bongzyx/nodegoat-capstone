@@ -1,5 +1,12 @@
 name: 00 - Main CI / CD Pipeline
 
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.txt"
+  workflow_dispatch:
+
 jobs:
   sast:
     name: SAST
