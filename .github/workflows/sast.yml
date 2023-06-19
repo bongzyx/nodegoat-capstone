@@ -41,35 +41,6 @@ jobs:
         with:
           category: "/language:${{matrix.language}}"
 
-  spotbugs:
-    name: SAST SpotBugs
-    needs: [SAST-CodeQL]
-    runs-on: self-hosted
-    # permissions:
-    #   actions: read
-    #   contents: read
-    #   security-events: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Run SpotBugs action
-        uses: jmservera/spotbugs-github-action@v0.1.0-alpha
-        with:
-          packages: com.example.-
-          target: ./target
-          dependenciesPath: ~/.m2
-          basePath: src/main/java
-      - name: Upload SpotBugs report
-        uses: actions/upload-artifact@v2
-        with:
-          name: spotbugs.sarif
-          path: ${{github.workspace}}/results.sarif
-      - name: Upload analysis results to GitHub Security tab
-        if: always()
-        uses: github/codeql-action/upload-sarif@v2.1.28
-        with:
-          sarif_file: ${{github.workspace}}/results.sarif
-
   semgrep:
     name: SAST Semgrep
     # If you are self-hosting, change the following `runs-on` value:
