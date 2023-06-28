@@ -6,7 +6,7 @@ on:
 
 jobs:
   SAST-CodeQL:
-    name: Build and SAST CodeQL
+    name: SAST CodeQL
     runs-on: self-hosted
 
     strategy:
