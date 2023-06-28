@@ -20,12 +20,14 @@ jobs:
 
   build-docker-image:
     name: 02 - Build Docker Image
-    uses: ./.github/workflows/docker-image.yml
+    uses: ./.github/workflows/build-docker-image.yml
     needs: [sast-codeql, sast-semgrep]
     secrets: inherit
 
-  # dast:
-  #   name: 03 - DAST Scan
-  #   uses: ./.github/workflows/dast.yml
-  #   needs: [build-docker-image]
-  #   secrets: inherit
+  dast:
+    name: 03 - DAST Scan
+    uses: ./.github/workflows/dast.yml
+    needs: [build-docker-image]
+    secrets: inherit
+    with:
+      image-tag: ${{ needs.build-docker-image.outputs.image-tag }}
