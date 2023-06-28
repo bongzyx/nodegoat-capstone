@@ -43,14 +43,22 @@ jobs:
       - name: test container
         run: curl -s localhost:4000/
 
-      - name: Run ZAP OWASP full scan
-        uses: zaproxy/action-full-scan@v0.4.0
+      # - name: Run ZAP OWASP full scan
+      #   uses: zaproxy/action-full-scan@v0.4.0
+      #   with:
+      #     docker_name: "owasp/zap2docker-stable"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     target: "http://localhost:4000"
+      #     cmd_options: '-a -j -l WARN -z "-addoninstallall" '
+      #     allow_issue_writing: true
+
+      - name: Run ZAP OWASP Baseline scan
+        uses: zaproxy/action-baseline@v0.7.0
         with:
           docker_name: "owasp/zap2docker-stable"
           token: ${{ secrets.GITHUB_TOKEN }}
           target: "http://localhost:4000"
-          cmd_options: '-a -j -l WARN -z "-addoninstallall" '
-          allow_issue_writing: true
+          cmd_options: "-a -r report_html.html"
 
       - name: Upload html report
         uses: actions/upload-artifact@v3
