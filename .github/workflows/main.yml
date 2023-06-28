@@ -21,4 +21,5 @@ jobs:
   build-docker-image:
     name: 02 - Build Docker Image
     uses: ./.github/workflows/docker-image.yml
+    needs: sast-codeql
     secrets: inherit
