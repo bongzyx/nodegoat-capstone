@@ -8,33 +8,20 @@ jobs:
   SAST-CodeQL:
     name: Build and SAST CodeQL
     runs-on: self-hosted
-    # permissions:
-    #   actions: read
-    #   contents: read
-    #   security-events: write
 
     strategy:
       fail-fast: false
       matrix:
         language: ["javascript"]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
-
-          # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-          # queries: security-extended,security-and-quality
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
@@ -43,35 +30,27 @@ jobs:
 
   semgrep:
     name: SAST Semgrep
-    # If you are self-hosting, change the following `runs-on` value:
     runs-on: self-hosted
-    # permissions:
-    #   actions: read
-    #   contents: read
-    #   security-events: write
+
     container:
-      # A Docker image with Semgrep installed. Do not change this.
       image: returntocorp/semgrep
 
-    # To skip any PR created by dependabot to avoid permission issues:
-    if: (github.actor != 'dependabot[bot]')
-
     steps:
-      # Fetch project source with GitHub Actions Checkout.
-      - uses: actions/checkout@v3
-      - run: semgrep ci -v -o results.sarif --sarif || true
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Perform Semgrep Analysis
+        run: semgrep ci -v -o results.sarif --sarif || true
         env:
-          # Add the rules that Semgrep uses by setting the SEMGREP_RULES environment variable.
           SEMGREP_RULES: p/default p/security-audit p/r2c-security-audit p/cwe-top-25 p/owasp-top-ten
-          # more at semgrep.dev/explore
-          # Uncomment SEMGREP_TIMEOUT to set this job's timeout (in seconds): Default timeout is 1800 seconds (30 minutes). 0=disable
-          # SEMGREP_TIMEOUT: 300
+
       - name: Upload Semgrep Report
         uses: actions/upload-artifact@v3.1.0
         if: always()
         with:
           name: semgrep.sarif
           path: ${{github.workspace}}/results.sarif
+
       - name: Upload analysis results to GitHub Security tab
         if: always()
         uses: github/codeql-action/upload-sarif@v2.1.28
