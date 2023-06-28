@@ -1,4 +1,4 @@
-name: 00 - Main CI / CD Pipeline
+name: 00 - Main Pipeline
 
 on:
   push:
@@ -8,7 +8,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  sast:
-    name: SAST
-    uses: ./.github/workflows/sast.yml
+  sast-codeql:
+    name: 01 - SAST CodeQL
+    uses: ./.github/workflows/sast-codeql.yml
+    secrets: inherit
+
+  sast-semgrep:
+    name: 01 - SAST Semgrep
+    uses: ./.github/workflows/sast-semgrep.yml
+    secrets: inherit
+
+  build-docker-image:
+    name: 02 - Build Docker Image
+    uses: ./.github/workflows/docker-image.yml
     secrets: inherit
