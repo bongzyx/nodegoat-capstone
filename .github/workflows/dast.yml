@@ -38,7 +38,7 @@ jobs:
       - run: docker rm nodegoat | true && docker run -d --network nodegoat_network --name nodegoat -p 4000:4000 -e NODE_ENV -e MONGODB_URI=mongodb://mongo:27017/nodegoat ${{ env.IMAGE_TAG }} sh -c "until nc -z -w 2 mongo 27017 && echo 'mongo is ready for connections' && node artifacts/db-reset.js && npm start; do sleep 2; done"
 
       - name: wait for container to start
-        run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:4000)" != "200" ]]; do sleep 5; done' || false
+        run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:4000)" != "302" ]]; do sleep 5; done' || false
 
       - name: test container
         run: curl -s localhost:4000/
@@ -60,5 +60,11 @@ jobs:
 
       - name: stop docker
         if: always()
-        run: |
-          docker stop nodegoat && docker rm mongo && docker container prune --force && docker image prune --force
+        run: >-
+          docker stop nodegoat &&
+          docker stop mongo &&
+          docker rm nodegoat &&
+          docker rm mongo &&
+          docker network remove nodegoat_network &&
+          docker container prune --force &&
+          docker image prune --force
