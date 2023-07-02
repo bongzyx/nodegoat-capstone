@@ -107,20 +107,32 @@ jobs:
           TMP_TARGET="http://localhost:4000"
           echo "TARGET=$TMP_TARGET" >> $GITHUB_ENV
 
+      - name: clone Nikto repository
+        run: git clone https://github.com/sullo/nikto && cd nikto/program && git checkout nikto-2.5.0
+
+      - name: clone Nikto repository
+        run: ./nikto.pl -h 'http://localhost:4000' -o scan.txt
+
+      - name: Upload scan report
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan.txt
+          path: scan.txt
+
       - name: Scan with nikto
         uses: thereisnotime/action-nikto@master
         with:
           url: ${{ env.TARGET }}
           additional_args: "-ssl"
 
-      - name: Commit and push changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          author_name: GitHub Actions
-          author_email: 41898282+github-actions[bot]@users.noreply.github.com
-          message: "👷 chore(nikto): add nikto report"
-          add: "./reports/web/*"
-          pull: "--rebase --autostash"
+      # - name: Commit and push changes
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     author_name: GitHub Actions
+      #     author_email: 41898282+github-actions[bot]@users.noreply.github.com
+      #     message: "👷 chore(nikto): add nikto report"
+      #     add: "./reports/web/*"
+      #     pull: "--rebase --autostash"
 
       - name: stop docker
         if: always()
