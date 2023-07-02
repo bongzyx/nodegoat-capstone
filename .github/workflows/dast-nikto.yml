@@ -24,10 +24,10 @@ jobs:
     name: Nikto DAST Scan
     runs-on: self-hosted
     steps:
-      - name: Checkout repository
+      - name: checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
+      - name: log in to the Container registry
         uses: docker/login-action@v2.1.0
         with:
           registry: ${{ env.REGISTRY }}
@@ -46,7 +46,7 @@ jobs:
       - name: test container
         run: curl -s localhost:4000/
 
-      - name: Prepare environment
+      - name: prepare environment
         run: |
           echo "START_DATE=$(date +'%d-%m-%YT%H-%M-%S-%Z')" >> $GITHUB_ENV
           echo "START_TIMESTAMP=$(date +'%s')" >> $GITHUB_ENV
@@ -56,26 +56,14 @@ jobs:
       - name: clone Nikto repository
         run: git clone https://github.com/sullo/nikto && cd nikto/program && git checkout nikto-2.5.0
 
-      - name: clone Nikto repository
-        run: pwd && ls -lah
-
       - name: run Nikto scan
         run: ./nikto/program/nikto.pl -h 'http://localhost:4000' -o scan.html || true
 
-      - name: Upload scan report
+      - name: upload scan report
         uses: actions/upload-artifact@v3
         with:
-          name: scan.txt
-          path: scan.txt
-
-      # - name: Commit and push changes
-      #   uses: EndBug/add-and-commit@v9
-      #   with:
-      #     author_name: GitHub Actions
-      #     author_email: 41898282+github-actions[bot]@users.noreply.github.com
-      #     message: "👷 chore(nikto): add nikto report"
-      #     add: "./reports/web/*"
-      #     pull: "--rebase --autostash"
+          name: scan.html
+          path: scan.html
 
       - name: stop docker
         if: always()
