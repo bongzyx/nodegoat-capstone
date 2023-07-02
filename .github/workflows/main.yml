@@ -24,9 +24,17 @@ jobs:
     needs: [sast-codeql, sast-semgrep]
     secrets: inherit
 
-  dast:
-    name: 03 - DAST Scan
-    uses: ./.github/workflows/dast.yml
+  dast-owasp:
+    name: 03 - DAST OWASP ZAP
+    uses: ./.github/workflows/dast-owasp.yml
+    needs: [build-docker-image]
+    secrets: inherit
+    with:
+      image-tag: ${{ needs.build-docker-image.outputs.image-tag }}
+
+  dast-nikto:
+    name: 03 - DAST Nikto
+    uses: ./.github/workflows/dast-nikto.yml
     needs: [build-docker-image]
     secrets: inherit
     with:
