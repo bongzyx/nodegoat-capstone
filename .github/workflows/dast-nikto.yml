@@ -1,4 +1,4 @@
-name: 03 - DAST Scan
+name: 03 - DAST Nikto Scan
 
 on:
   workflow_dispatch:
