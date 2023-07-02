@@ -76,3 +76,59 @@ jobs:
           docker network remove nodegoat_network &&
           docker container prune --force &&
           docker image prune --force
+
+  dast-nikto:
+    name: Nikto DAST Scan
+    runs-on: self-hosted
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker network create nodegoat_network
+
+      - run: docker rm mongo | true && docker run -d --name mongo -p 27017:27017 -u mongodb --network nodegoat_network --name mongo mongo:4.4
+
+      - run: docker rm nodegoat | true && docker run -d --network nodegoat_network --name nodegoat -p 4000:4000 -e NODE_ENV -e MONGODB_URI=mongodb://mongo:27017/nodegoat ${{ env.IMAGE_TAG }} sh -c "until nc -z -w 2 mongo 27017 && echo 'mongo is ready for connections' && node artifacts/db-reset.js && npm start; do sleep 2; done"
+
+      - name: wait for container to start
+        run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:4000)" != "302" ]]; do sleep 5; done' || false
+
+      - name: test container
+        run: curl -s localhost:4000/
+
+      - name: Prepare environment
+        run: |
+          echo "START_DATE=$(date +'%d-%m-%YT%H-%M-%S-%Z')" >> $GITHUB_ENV
+          echo "START_TIMESTAMP=$(date +'%s')" >> $GITHUB_ENV
+          TMP_TARGET="http://localhost:4000"
+          echo "TARGET=$TMP_TARGET" >> $GITHUB_ENV
+
+      - name: Scan with nikto
+        uses: thereisnotime/action-nikto@master
+        with:
+          url: ${{ env.TARGET }}
+          additional_args: "-ssl"
+
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: "👷 chore(nikto): add nikto report"
+          add: "./reports/web/*"
+          pull: "--rebase --autostash"
+
+      - name: stop docker
+        if: always()
+        run: >-
+          docker stop nodegoat &&
+          docker stop mongo &&
+          docker rm nodegoat &&
+          docker rm mongo &&
+          docker network remove nodegoat_network &&
+          docker container prune --force &&
+          docker image prune --force
