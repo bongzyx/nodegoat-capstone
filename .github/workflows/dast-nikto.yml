@@ -62,7 +62,7 @@ jobs:
       - name: upload scan report
         uses: actions/upload-artifact@v3
         with:
-          name: scan.html
+          name: dast_nikto_report.html
           path: scan.html
 
       - name: stop docker
