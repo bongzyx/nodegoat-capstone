@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dast_wapiti_report.html
-          path: scan.html
+          path: dast_wapiti_report.html
 
       - name: stop docker
         if: always()
