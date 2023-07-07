@@ -53,6 +53,9 @@ jobs:
           TMP_TARGET="http://localhost:4000"
           echo "TARGET=$TMP_TARGET" >> $GITHUB_ENV
 
+      - name: clone Wapiti repository
+        run: git clone https://github.com/wapiti-scanner/wapiti.git
+
       - name: run Wapiti scan
         run: python3 wapiti/bin/wapiti -u 'http://localhost:4000' -dr -o 'dast_wapiti_report.html'
 
