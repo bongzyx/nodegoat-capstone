@@ -32,9 +32,9 @@ jobs:
     with:
       image-tag: ${{ needs.build-docker-image.outputs.image-tag }}
 
-  dast-nikto:
-    name: 03 - DAST Nikto
-    uses: ./.github/workflows/dast-nikto.yml
+  dast-wapiti:
+    name: 03 - DAST Wapiti
+    uses: ./.github/workflows/dast-wapiti.yml
     needs: [build-docker-image]
     secrets: inherit
     with:
