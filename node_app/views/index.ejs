@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SKF Labs</title>
+    <link href="/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <main class="container">
+      <div>
+        <h2 class="panel-heading">Unvalidated URL redirections</h2>
+        <div class="panel-body">
+          <div class="col-md-6">
+            <form method="post" action="/redirect?newurl=/newsite" >
+              <label>Craft a URL that leverages the flaw present in the navigation logic of this page.</label>
+              <button class="btn btn-primary" type="submit">Go to new website</button>
+            </form>
+          </div>
+        </div>
+
+        <center>
+          <p style="font-size:2em;"> <%- content %> </p>
+        </center>
+      </div>
+
+      <div>
+      <h2 class="panel-heading">Without CSP!</h2>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <form method="post" action="/unprotected">
+            <input type="text" class="form-control" name="no_csp" placeholder="no header" /><br />
+            <button class="btn btn-primary" type="submit">Submit Button</button>
+        </div>
+      </form>
+      </div>
+      <div class="panel-heading">With CSP!</div>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <form method="post" action="/protected">
+            <input type="text" class="form-control" name="with_csp" placeholder="with header" /><br />
+            <button class="btn btn-primary" type="submit">Submit Button</button>
+          </form>
+        </div>
+      </div>
+
+      <center> <p style="font-size:2em;"> <%- xss %> </p></center>
+    </div>
+
+    <div>
+      <h2 class="panel-heading">XSS!</h2>
+      <div class="panel-body">
+        <div class="col-md-6">
+          <form method="post" action="/home">
+            <input type="text" class="form-control" name="string" placeholder="fill me in plz" /><br />
+            <button class="btn btn-primary" type="submit">Submit Button</button>
+          </form>
+        </div>
+      </div>
+    <center> <p style="font-size:2em;"> <%- xss %> </p></center>
+    </div>
+
+    </main>
+  </body>
+</html>
