@@ -1,64 +1,81 @@
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>SKF Labs</title>
-    <link href="/css/styles.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <title>Secure Site</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link href="/css/styles.css" rel="stylesheet" />
   </head>
 
   <body>
-    <main class="container">
-      <div>
-        <h2 class="panel-heading">Unvalidated URL redirections</h2>
-        <div class="panel-body">
-          <div class="col-md-6">
-            <form method="post" action="/redirect?newurl=/newsite" >
-              <label>Craft a URL that leverages the flaw present in the navigation logic of this page.</label>
-              <button class="btn btn-primary" type="submit">Go to new website</button>
-            </form>
+    <main class="root">
+      <h1>Unvalidated URL redirections</h1>
+      <div class="container-group">
+        <form method="post" action="/redirect?newurl=/newsite">
+          <h2>This button will redirect user to a new site.</h2>
+          <button type="submit">Go to new website</button>
+        </form>
+        <div style="width: 100%; display: flex; justify-content: center">
+          <p style="font-size: 2em"><%- content %></p>
+        </div>
+      </div>
+
+      <h1>Content Security Policy (CSP)</h1>
+      <div class="container-group">
+        <h2>Without CSP</h2>
+        <form method="post" action="/unprotected">
+          <div class="row-box">
+            <input
+              type="text"
+              class="form-control"
+              name="no_csp"
+              placeholder="no header"
+            /><br />
+            <button type="submit">Submit Button</button>
           </div>
-        </div>
+        </form>
 
-        <center>
-          <p style="font-size:2em;"> <%- content %> </p>
-        </center>
-      </div>
+        <h2>With CSP</h2>
+        <h3>
+          CSP is applied by setting the
+          <code>Content-Security-Policy</code> HTTP header in the
+          <code>&lt;head&gt;</code> section of the HTML file.
+        </h3>
+        <form method="post" action="/protected">
+          <div class="row-box">
+            <input
+              type="text"
+              class="form-control"
+              name="with_csp"
+              placeholder="with header"
+            /><br />
+            <button type="submit">Submit Button</button>
+          </div>
+        </form>
 
-      <div>
-      <h2 class="panel-heading">Without CSP!</h2>
-      <div class="panel-body">
-        <div class="col-md-6">
-          <form method="post" action="/unprotected">
-            <input type="text" class="form-control" name="no_csp" placeholder="no header" /><br />
-            <button class="btn btn-primary" type="submit">Submit Button</button>
-        </div>
-      </form>
-      </div>
-      <div class="panel-heading">With CSP!</div>
-      <div class="panel-body">
-        <div class="col-md-6">
-          <form method="post" action="/protected">
-            <input type="text" class="form-control" name="with_csp" placeholder="with header" /><br />
-            <button class="btn btn-primary" type="submit">Submit Button</button>
-          </form>
+        <div style="width: 100%; display: flex; justify-content: center">
+          <p style="font-size: 2em"><%- xss %></p>
         </div>
       </div>
 
-      <center> <p style="font-size:2em;"> <%- xss %> </p></center>
-    </div>
-
-    <div>
-      <h2 class="panel-heading">XSS!</h2>
-      <div class="panel-body">
-        <div class="col-md-6">
-          <form method="post" action="/home">
-            <input type="text" class="form-control" name="string" placeholder="fill me in plz" /><br />
-            <button class="btn btn-primary" type="submit">Submit Button</button>
-          </form>
+      <h1>Cross Site Scripting (XSS)</h1>
+      <div class="container-group">
+        <form method="post" action="/home">
+          <h3><code> &lt;script&gt;alert('hello')&lt;/script&gt;</code></h3>
+          <div class="row-box">
+            <input
+              type="text"
+              class="form-control"
+              name="string"
+              placeholder="fill in here"
+            /><br />
+            <button type="submit">Submit Button</button>
+          </div>
+        </form>
+        <div style="width: 100%; display: flex; justify-content: center">
+          <p style="font-size: 2em"><%- xss %></p>
         </div>
       </div>
-    <center> <p style="font-size:2em;"> <%- xss %> </p></center>
-    </div>
-
     </main>
   </body>
 </html>

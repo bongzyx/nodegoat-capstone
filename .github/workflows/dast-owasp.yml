@@ -48,7 +48,7 @@ jobs:
         with:
           docker_name: "owasp/zap2docker-stable"
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: "http://localhost:4000"
+          target: "http://192.168.1.51:4000"
           cmd_options: '-a -r report_html.html -w report_md.md -J report_json.json -j -l WARN -z "-addoninstallall" '
           allow_issue_writing: true
 

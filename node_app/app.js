@@ -5,7 +5,7 @@ app.use(express.static(__dirname + "/static"));
 app.use(express.urlencoded({ extended: true }));
 
 app.get("", (req, res) => {
-  res.render("index.ejs", { content: "Sorry, this is the old website.", xss: null });
+  res.render("index.ejs", { content: "Welcome to the most secure website!", xss: null });
 });
 
 app.post("/unprotected", (req, res) => {
